@@ -134,88 +134,13 @@
 
 
     <!-- Appointment Start -->
-    <h1>HealthScanAI - Speed Scan</h1>
+   <h1>HealthScanAI - Speed Scan</h1>
     <p>Quick Cancer Detection with AI</p>
-    <p>Upload your medical scan and get rapid AI-driven results.</p>
 
-    <div class="section">
-        <h2>Step 1: Upload Your Image</h2>
-        <label for="fileUpload">Upload Your Medical Scan:</label>
-        <input type="file" id="fileUpload" accept=".dcm, .png, .jpg, .jpeg">
-        <p>(Supported formats: DICOM, PNG, JPEG)</p>
-        <p>Drag and Drop File Here</p>
-        <p>or</p>
-        <p>Browse Files (Click to select from your device)</p>
-    </div>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button onclick="startScan()">Start Scan</button>
 
-    <div class="section">
-        <h2>Step 2: Select Service</h2>
-        <label for="serviceSelect">Choose the Service You Need:</label>
-        <select id="serviceSelect">
-            <option value="detection">Tumor Detection - Identify the presence of a tumor within the scan.</option>
-            <option value="classification">Tumor Classification - Classify the type of tumor detected, providing detailed analysis.</option>
-        </select>
-    </div>
-
-    <div class="section">
-        <h2>Step 3: Scan Details</h2>
-        <label for="patientId">Patient ID (Optional):</label>
-        <input type="text" id="patientId" placeholder="e.g., PAT123456">
-    </div>
-
-    <div class="section">
-        <h2>Step 4: Confirm and Start Scan</h2>
-        <p>Review and Confirm Your Selections:</p>
-        <ul>
-            <li><strong>Uploaded File:</strong> <span id="fileName">filename.dcm</span></li>
-            <li><strong>Selected Service:</strong> <span id="selectedService">Tumor Detection</span></li>
-            <li><strong>Patient ID:</strong> <span id="selectedPatientId">PAT123456</span></li>
-            <li><strong>Notes:</strong> <span id="selectedNotes">Focus on upper right quadrant</span></li>
-        </ul>
-        <button onclick="startScan()">Start Scan</button>
-        <p>Click the button to begin analysis. Results will be ready in just a few moments.</p>
-    </div>
-
-    <div class="section">
-        <h2>Step 5: View Results</h2>
-        <p>Your scan is complete! Results are ready and can be viewed immediately.</p>
-        <button onclick="downloadReport()">Download Report</button>
-        <p>(PDF format with detailed analysis)</p>
-        <button onclick="viewInteractiveReport()">View Interactive Report</button>
-        <p>(Explore results directly on the site)</p>
-    </div>
-
-    <script>
-        document.getElementById('fileUpload').addEventListener('change', function() {
-            document.getElementById('fileName').textContent = this.files[0].name;
-        });
-
-        document.getElementById('serviceSelect').addEventListener('change', function() {
-            const serviceText = this.options[this.selectedIndex].text;
-            document.getElementById('selectedService').textContent = serviceText;
-        });
-
-        document.getElementById('patientId').addEventListener('input', function() {
-            document.getElementById('selectedPatientId').textContent = this.value;
-        });
-
-        document.getElementById('notes').addEventListener('input', function() {
-            document.getElementById('selectedNotes').textContent = this.value;
-        });
-
-        function startScan() {
-            alert('Starting scan...');
-        }
-
-        function downloadReport() {
-            alert('Downloading report...');
-        }
-
-        function viewInteractiveReport() {
-            alert('Viewing interactive report...');
-        }
-    </script>
-
+    <div id="result"></div>
     <!-- Appointment End -->
     
 

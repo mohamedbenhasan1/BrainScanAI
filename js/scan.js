@@ -1,7 +1,7 @@
 let model;
 
 async function loadModel() {
-    model = await tf.loadLayersModel('model/model.json');  // Load the model
+    model = await tf.loadLayersModel('model/mohamedbenhasan_ResNet50_model.json');  // Load the model
     console.log("Model loaded successfully");
 }
 

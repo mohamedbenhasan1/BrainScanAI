@@ -134,13 +134,61 @@
 
 
     <!-- Appointment Start -->
-   <h1>HealthScanAI - Speed Scan</h1>
-    <p>Quick Cancer Detection with AI</p>
-
-    <input type="file" id="imageUpload" accept="image/*">
-    <button onclick="startScan()">Start Scan</button>
-
+  <h1>Speed Scan Form</h1>
+    <form id="scanForm">
+        <label for="imageUpload">Upload Your Medical Scan:</label>
+        <input type="file" id="imageUpload" accept="image/*" required>
+        <br>
+        <label for="service">Choose the Service You Need:</label>
+        <select id="service" required>
+            <option value="detection">Tumor Detection</option>
+            <option value="classification">Tumor Classification</option>
+        </select>
+        <br>
+        <button type="button" onclick="startScan()">Start Scan</button>
+    </form>
     <div id="result"></div>
+
+    <script>
+        async function startScan() {
+            const fileInput = document.getElementById('imageUpload');
+            const service = document.getElementById('service').value;
+            const resultDiv = document.getElementById('result');
+
+            if (fileInput.files.length === 0) {
+                alert('Please upload an image file.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const image = await loadImage(file);
+
+            // Load the model
+            const model = await tf.loadLayersModel('path/to/your/model.json');
+
+            // Preprocess the image
+            const tensor = tf.browser.fromPixels(image).resizeNearestNeighbor([224, 224]).toFloat().expandDims(0);
+
+            // Predict
+            const predictions = await model.predict(tensor).data();
+
+            // Display results
+            resultDiv.innerHTML = `Predictions: ${predictions}`;
+        }
+
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.src = event.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
     <!-- Appointment End -->
     
 

@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>BrainScanAI</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -152,7 +153,7 @@
     <script>
         async function loadModel() {
             // Load the converted TensorFlow.js model
-            const model = await tf.loadLayersModel('path/to/your/model/model.json');
+            const model = await tf.loadLayersModel('model/mohamedbenhasan_ResNet50_model.json');
             return model;
         }
 

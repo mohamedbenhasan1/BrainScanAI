@@ -150,6 +150,12 @@
     <div id="result"></div>
 
     <script>
+        async function loadModel() {
+            // Load the converted TensorFlow.js model
+            const model = await tf.loadLayersModel('path/to/your/model/model.json');
+            return model;
+        }
+
         async function startScan() {
             const fileInput = document.getElementById('imageUpload');
             const service = document.getElementById('service').value;
@@ -162,18 +168,22 @@
 
             const file = fileInput.files[0];
             const image = await loadImage(file);
-
-            // Load the model
-            const model = await tf.loadLayersModel('path/to/your/model.json');
+            const model = await loadModel();
 
             // Preprocess the image
-            const tensor = tf.browser.fromPixels(image).resizeNearestNeighbor([224, 224]).toFloat().expandDims(0);
+            const tensor = tf.browser.fromPixels(image)
+                .resizeNearestNeighbor([224, 224]) // Adjust size based on your model input shape
+                .toFloat()
+                .expandDims(0);
 
             // Predict
             const predictions = await model.predict(tensor).data();
+            
+            // Assuming the model outputs a single value for binary classification
+            const result = predictions[0] > 0.5 ? 'Tumor Detected' : 'No Tumor Detected';
 
             // Display results
-            resultDiv.innerHTML = `Predictions: ${predictions}`;
+            resultDiv.innerHTML = `<strong>Prediction Result:</strong> ${result}`;
         }
 
         function loadImage(file) {

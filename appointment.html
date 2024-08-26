@@ -149,18 +149,13 @@
         <button type="button" onclick="startScan()">Start Scan</button>
     </form>
     <div id="result"></div>
+    <div id="dimensions"></div> <!-- Container for image dimensions -->
 
     <script>
-        async function loadModel() {
-            // Load the converted TensorFlow.js model
-            const model = await tf.loadLayersModel('model/mohamedbenhasan_ResNet50_model.json');
-            return model;
-        }
-
         async function startScan() {
             const fileInput = document.getElementById('imageUpload');
-            const service = document.getElementById('service').value;
             const resultDiv = document.getElementById('result');
+            const dimensionsDiv = document.getElementById('dimensions');
 
             if (fileInput.files.length === 0) {
                 alert('Please upload an image file.');
@@ -169,22 +164,32 @@
 
             const file = fileInput.files[0];
             const image = await loadImage(file);
-            const model = await loadModel();
 
-            // Preprocess the image
-            const tensor = tf.browser.fromPixels(image)
-                .resizeNearestNeighbor([224, 224]) // Adjust size based on your model input shape
-                .toFloat()
-                .expandDims(0);
+            // Display image dimensions
+            dimensionsDiv.innerHTML = `<strong>Image Dimensions:</strong> ${image.width} x ${image.height}`;
 
-            // Predict
-            const predictions = await model.predict(tensor).data();
-            
-            // Assuming the model outputs a single value for binary classification
-            const result = predictions[0] > 0.5 ? 'Tumor Detected' : 'No Tumor Detected';
+            try {
+                // Load the model
+                const model = await tf.loadLayersModel('model/model.json');
+                console.log('Model loaded successfully.');
 
-            // Display results
-            resultDiv.innerHTML = `<strong>Prediction Result:</strong> ${result}`;
+                // Preprocess the image
+                const tensor = tf.browser.fromPixels(image)
+                    .resizeNearestNeighbor([224, 224])
+                    .toFloat()
+                    .expandDims(0); // Add batch dimension
+
+                // Predict
+                const predictions = await model.predict(tensor).data();
+                console.log('Predictions:', predictions);
+
+                // Display results
+                const result = predictions[0] > 0.5 ? 'Tumor Detected' : 'No Tumor Detected';
+                resultDiv.innerHTML = `<strong>Prediction Result:</strong> ${result}`;
+            } catch (error) {
+                console.error('Error during prediction:', error);
+                resultDiv.innerHTML = 'Prediction failed.';
+            }
         }
 
         function loadImage(file) {

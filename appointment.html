@@ -135,7 +135,7 @@
 
 
     <!-- Appointment Start -->
-  <h1>Speed Scan Form</h1>
+    <h1>Speed Scan Form</h1>
     <form id="scanForm">
         <label for="imageUpload">Upload Your Medical Scan:</label>
         <input type="file" id="imageUpload" accept="image/*" required>
@@ -149,7 +149,7 @@
         <button type="button" onclick="startScan()">Start Scan</button>
     </form>
     <div id="result"></div>
-    <div id="dimensions"></div> <!-- Container for image dimensions -->
+    <div id="dimensions"></div>
 
     <script>
         async function startScan() {
@@ -174,10 +174,17 @@
                 console.log('Model loaded successfully.');
 
                 // Preprocess the image
-                const tensor = tf.browser.fromPixels(image)
-                    .resizeNearestNeighbor([224, 224])
+                const canvas = document.createElement('canvas');
+                canvas.width = 224;
+                canvas.height = 224;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(image, 0, 0, 224, 224);
+
+                // Convert to tensor
+                const tensor = tf.browser.fromPixels(canvas)
                     .toFloat()
-                    .expandDims(0); // Add batch dimension
+                    .expandDims(0) // Add batch dimension
+                    .div(tf.scalar(255)); // Normalize to [0, 1] range
 
                 // Predict
                 const predictions = await model.predict(tensor).data();
@@ -188,7 +195,7 @@
                 resultDiv.innerHTML = `<strong>Prediction Result:</strong> ${result}`;
             } catch (error) {
                 console.error('Error during prediction:', error);
-                resultDiv.innerHTML = 'Prediction failed.';
+                resultDiv.innerHTML = `<strong>Prediction failed.</strong> Error: ${error.message}`;
             }
         }
 
@@ -198,6 +205,7 @@
                 reader.onload = (event) => {
                     const img = new Image();
                     img.onload = () => resolve(img);
+                    img.onerror = (err) => reject(err);
                     img.src = event.target.result;
                 };
                 reader.onerror = reject;

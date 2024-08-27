@@ -1,0 +1,52 @@
+{
+  "model": {
+    "class_name": "Sequential",
+    "config": {
+      "name": "simple_model",
+      "layers": [
+        {
+          "class_name": "Conv2D",
+          "config": {
+            "name": "conv2d_1",
+            "filters": 32,
+            "kernel_size": [3, 3],
+            "strides": [1, 1],
+            "padding": "same",
+            "activation": "relu"
+          }
+        },
+        {
+          "class_name": "MaxPooling2D",
+          "config": {
+            "name": "maxpool_1",
+            "pool_size": [2, 2],
+            "strides": [2, 2],
+            "padding": "valid"
+          }
+        },
+        {
+          "class_name": "Flatten",
+          "config": {
+            "name": "flatten"
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "name": "dense_1",
+            "units": 128,
+            "activation": "relu"
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "name": "dense_2",
+            "units": 1,
+            "activation": "sigmoid"
+          }
+        }
+      ]
+    }
+  }
+}
